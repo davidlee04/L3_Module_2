@@ -1,3 +1,4 @@
+//Copyright © 2017 by David Lee 
 package intro_to_file_io;
 
 import java.io.FileNotFoundException;
@@ -20,10 +21,10 @@ public class Decryptor {
 		
 		try {
 			FileReader fileReader = new FileReader(fileName);
-			int lol = fileReader.read();
-			while(lol != -1) {
-				initial += (char) lol;
-				lol = fileReader.read();
+			int a = fileReader.read();
+			while(a != -1) {
+				initial += (char) a;
+				a = fileReader.read();
 			}
 			fileReader.close();
 		} catch (FileNotFoundException e) {
@@ -32,12 +33,9 @@ public class Decryptor {
 			e.printStackTrace();
 		}
 		
-		for (int i = 1; i < initial.length(); i+=2) {
-			if (initial.charAt(i) != 'g') {
-				message += initial.charAt(i);
-			}
+		for (int i = 0; i < initial.length(); i+=2) {
+			message += initial.charAt(i);
 		}
-		message = initial;
 		System.out.println(message);
 	}
 

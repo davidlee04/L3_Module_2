@@ -1,3 +1,4 @@
+//Copyright © 2017 by David Lee 
 package intro_to_file_io;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
