@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,6 +20,7 @@ import javax.swing.JTextField;
 
 public class ToDoList implements ActionListener {
 	ArrayList<String> tasks = new ArrayList<String>();
+	//ArrayList <JLabel> labels = new ArrayList<JLabel>();
 	
 	JFrame frame;
 	JPanel panel;
@@ -26,15 +28,15 @@ public class ToDoList implements ActionListener {
 	JButton removeTask;
 	JButton save;
 	JButton load;
-	//JLabel taskList;
-	JTextField tasksList;
+	JLabel taskList;
+	//JTextField tasksList;
 	
 	String task = "";
 	
-	int removeTaskNum = 100000000;
 	public static void main(String[] args) {
 		ToDoList go = new ToDoList();
 		go.setUI();
+		go.refreshLabel();
 	}
 	void setUI() {
 		frame = new JFrame();
@@ -43,15 +45,15 @@ public class ToDoList implements ActionListener {
 		removeTask = new JButton();
 		save = new JButton();
 		load = new JButton();
-		//taskList = new JLabel();
-		tasksList = new JTextField();
+		taskList = new JLabel();
+		//tasksList = new JTextField();
 		frame.add(panel);
 		panel.add(addTask);
 		panel.add(removeTask);
 		panel.add(save);
 		panel.add(load);
-		//panel.add(taskList);
-		panel.add(tasksList);
+		panel.add(taskList);
+		//panel.add(tasksList);
 		addTask.setText("Add Task");
 		removeTask.setText("Remove ");
 		save.setText("Save Current Task List");
@@ -61,47 +63,75 @@ public class ToDoList implements ActionListener {
 		save.addActionListener(this);
 		load.addActionListener(this);
 		frame.setVisible(true);
-		frame.setSize(625, 500);
-		tasksList.setEditable(false);
+		frame.setSize(575, 500);
+		//tasksList.setEditable(false);
+	}
+	
+	/*void addLabel(JLabel e) {
+		if(labels.add(e)) {
+			panel.add(e);
+		}
+	}*/
+		
+	void refreshLabel() {
+		taskList.setText("");
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("src/intro_to_file_io/savedtasks.txt"));
 			String line = br.readLine();
+			tasks.clear();
 			while(line != null){
-				task += line+"\n";
+				task += line+" ";
+				System.out.println(tasks);
+				tasks.add(line);
+				System.out.println(tasks);
 				line = br.readLine();
 			}
-			
+			for (int i = 0; i < tasks.size(); i++) {
+				taskList.setText(taskList.getText()+tasks.get(i)+System.lineSeparator());
+			}
 			br.close();
+
 		} catch (FileNotFoundException e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//taskList.setText(task);
-		tasksList.setText(task);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource().equals(addTask)) {
-			String taskNum = JOptionPane.showInputDialog("Enter the task number (e.g. 1, 2, etc...).");
-			String newTask = JOptionPane.showInputDialog("Enter the corresponding task.");
-			int taskInt = Integer.parseInt(taskNum);
+			String newTask = JOptionPane.showInputDialog("Enter a task.");
+			tasks.add(newTask);
 			
 		}
 		if(e.getSource().equals(removeTask)) {
-			String removeTask = JOptionPane.showInputDialog("Enter the # of the task you want to remove.");
-			removeTaskNum = Integer.parseInt(removeTask);
+			String removeTask = JOptionPane.showInputDialog("Enter the task you want to remove.");
+			tasks.remove(removeTask);
 			
 		}
 		if(e.getSource().equals(save)) {
 			try {
-				FileWriter fileWriter = new FileWriter("src/intro_to_file_io/savedtasks.txt");
+				//System.out.println(tasks);
+				FileWriter fileWriter = new FileWriter("src/intro_to_file_io/savedtasks.txt", false);
+				for (int i = 0; i < tasks.size(); i++) {
+					fileWriter.write(tasks.get(i)+"\n");
+				}
 				fileWriter.close();
 			} catch (IOException e2) {
 				// TODO: handle exception
 				e2.printStackTrace();
+			}
+			refreshLabel();
+		
+		}
+		if(e.getSource().equals(load)) {
+			JFileChooser jfc = new JFileChooser();
+			int returnVal = jfc.showOpenDialog(null);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				String fileName = jfc.getSelectedFile().getAbsolutePath();
+				System.out.println(fileName);
 			}
 		}
 	}
