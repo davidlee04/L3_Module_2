@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 
 public class ToDoList implements ActionListener {
 	ArrayList<String> tasks = new ArrayList<String>();
-	//ArrayList <JLabel> labels = new ArrayList<JLabel>();
 	
 	JFrame frame;
 	JPanel panel;
@@ -66,12 +65,6 @@ public class ToDoList implements ActionListener {
 		frame.setSize(575, 500);
 		//tasksList.setEditable(false);
 	}
-	
-	/*void addLabel(JLabel e) {
-		if(labels.add(e)) {
-			panel.add(e);
-		}
-	}*/
 		
 	void refreshLabel() {
 		taskList.setText("");
@@ -87,7 +80,11 @@ public class ToDoList implements ActionListener {
 				line = br.readLine();
 			}
 			for (int i = 0; i < tasks.size(); i++) {
-				taskList.setText(taskList.getText()+tasks.get(i)+System.lineSeparator());
+				if(i == 0) {
+					taskList.setText(taskList.getText()+tasks.get(i)+System.lineSeparator());
+				}else if(i >= 1) {
+					taskList.setText(taskList.getText()+", "+tasks.get(i)+System.lineSeparator());
+				}
 			}
 			br.close();
 
@@ -127,11 +124,27 @@ public class ToDoList implements ActionListener {
 		
 		}
 		if(e.getSource().equals(load)) {
+			String fileName = "";
 			JFileChooser jfc = new JFileChooser();
 			int returnVal = jfc.showOpenDialog(null);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				String fileName = jfc.getSelectedFile().getAbsolutePath();
+				fileName = jfc.getSelectedFile().getAbsolutePath();
 				System.out.println(fileName);
+				System.out.println(fileName.substring(34));
+			}
+			try {
+				tasks.clear();
+				BufferedReader buffReader = new BufferedReader(new FileReader(fileName.substring(34)));
+				String readLine = buffReader.readLine();
+				while(readLine != null) {
+					tasks.add(readLine);
+					readLine = buffReader.readLine();
+				}
+			} catch (FileNotFoundException e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			} catch (IOException e3) {
+				e3.printStackTrace();
 			}
 		}
 	}
